@@ -30,9 +30,6 @@
   "files": [
     "dist"
   ],
-  "peerDependencies": {
-    "svelte": "^4.0.4"
-  },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/kit": "^2.5.27",
