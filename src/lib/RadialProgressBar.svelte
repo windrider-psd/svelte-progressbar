@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	// @ts-check
 	import Arc from './Arc.svelte';
 	import SeriesArc from './SeriesArc.svelte';
@@ -7,33 +9,60 @@
 	import type { SeriesStore, Threshold } from './types';
 	import { seriesStore } from './stores';
 
-	export let thickness: number = 5;
-	export let textSize: number = null;
-	export let showProgressValue: boolean = true;
-	export let stackSeries: boolean = true;
-	export let margin: number = 0;
-	export let addBackground: boolean = true;
-	export let bgColor: string = '#e5e5e5';
-	export let bgFillColor: string = 'transparent';
-	export let labelColor: string = '#555';
-	export let invLabelColor: string = '#fff';
-	export let startAngle: number = 0;
-	export let endAngle: number = 360;
-	export let colors: Array<string>;
-	export let thresholds: Array<Threshold>;
-	export let store: SeriesStore;
-	export let style: string;
-	export let cls: string = '';
-	export let labelAlignX: string;
-	export let labelAlignY: string;
-	export let actWidth: number = 0;
+	interface Props {
+		thickness?: number;
+		textSize?: number;
+		showProgressValue?: boolean;
+		stackSeries?: boolean;
+		margin?: number;
+		addBackground?: boolean;
+		bgColor?: string;
+		bgFillColor?: string;
+		labelColor?: string;
+		invLabelColor?: string;
+		startAngle?: number;
+		endAngle?: number;
+		colors: Array<string>;
+		thresholds: Array<Threshold>;
+		store: SeriesStore;
+		style: string;
+		cls?: string;
+		labelAlignX: string;
+		labelAlignY: string;
+		actWidth?: number;
+		children?: import('svelte').Snippet;
+	}
 
-	let vbHeight = 100;
-	let actHeight: number = 0;
-	let scaleX: number = 1;
-	let scaleY: number = 1;
+	let {
+		thickness = 5,
+		textSize = $bindable(null),
+		showProgressValue = true,
+		stackSeries = true,
+		margin = 0,
+		addBackground = true,
+		bgColor = '#e5e5e5',
+		bgFillColor = 'transparent',
+		labelColor = '#555',
+		invLabelColor = '#fff',
+		startAngle = $bindable(0),
+		endAngle = $bindable(360),
+		colors,
+		thresholds,
+		store,
+		style,
+		cls = '',
+		labelAlignX,
+		labelAlignY = $bindable(),
+		actWidth = 0,
+		children
+	}: Props = $props();
 
-	$: {
+	let vbHeight = $state(100);
+	let actHeight: number = $state(0);
+	let scaleX: number = $state(1);
+	let scaleY: number = $state(1);
+
+	run(() => {
 		if(style == 'semicircle') {
 			actHeight = actWidth / 2;
 			vbHeight = 50;
@@ -47,7 +76,7 @@
 			scaleX = 100 / actWidth;
 		if(actHeight > 0)
 			scaleY = vbHeight / actHeight;
-	}
+	});
 
 	if(style == 'semicircle') {
 		if(!labelAlignY)
@@ -115,5 +144,5 @@
 			{scaleY}>
 		</ProgressLabel>
 	{/if}
-	<slot></slot>
+	{@render children?.()}
 </svg>

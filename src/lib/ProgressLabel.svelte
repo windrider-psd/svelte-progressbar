@@ -1,22 +1,40 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	// @ts-check
 	import type {SeriesStore} from './types';
 
-	export let textSize: number = null;
-	export let labelColor: string = null;
-	export let invLabelColor: string = null;
-	export let store: SeriesStore;
-	export let maskId: string;
-	export let labelAlignX: string = 'center'; //center, left ,leftOf, right, rightOf
-	export let labelAlignY: string = 'middle'; //middle, top, bottom, above, below
-	export let showInvertedLabel: boolean = labelAlignX == 'center' && labelAlignY == 'middle';
-	export let style: string = 'default';
-	export let scaleX: number = 1;
-	export let scaleY: number = 1;
+	interface Props {
+		textSize?: number;
+		labelColor?: string;
+		invLabelColor?: string;
+		store: SeriesStore;
+		maskId: string;
+		labelAlignX?: string;
+		labelAlignY?: string;
+		showInvertedLabel?: boolean;
+		style?: string;
+		scaleX?: number;
+		scaleY?: number;
+	}
 
-	let lblStyle: Array<string>;
-	let invLblStyle: Array<string>;
-	let labelTranslateY = 0;
+	let {
+		textSize = $bindable(null),
+		labelColor = null,
+		invLabelColor = $bindable(null),
+		store,
+		maskId,
+		labelAlignX = 'center',
+		labelAlignY = 'middle',
+		showInvertedLabel = labelAlignX == 'center' && labelAlignY == 'middle',
+		style = 'default',
+		scaleX = 1,
+		scaleY = 1
+	}: Props = $props();
+
+	let lblStyle: Array<string> = $state();
+	let invLblStyle: Array<string> = $state();
+	let labelTranslateY = $state(0);
 
 	if(textSize == null)
 		textSize = 100;
@@ -24,7 +42,7 @@
 	if(invLabelColor == null)
 		invLabelColor = '#fff';
 
-	$: {
+	run(() => {
 
 		if(labelAlignY == 'above') {
 			labelTranslateY = -100;
@@ -45,7 +63,7 @@
 			'color:' + invLabelColor
 		];
 
-	}
+	});
 </script>
 
 <style>

@@ -1,41 +1,27 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 
 	// @ts-check
 
 	import type {SeriesStore} from './types';
 	import ProgressLabel from './ProgressLabel.svelte';
 
-	export let height: number = null;
-	export let textSize: number = null;
-	export let showProgressValue: boolean = true;
-	export let addBackground: boolean = true;
-	export let bgColor: string = '#f1f1f1';
-	export let labelColor: string = null;
-	export let invLabelColor: string = null;
-	export let store: SeriesStore;
-	export let cls: string = '';
-	export let path: string = null;
-	export let pathFn: any = () => '';
-	export let fillDirection: string = 'l2r';
-	export let labelAlignX: string = 'center'; //center, left ,leftOf, right, rightOf
-	export let labelAlignY: string = 'middle'; //middle, top, bottom, above, below
-	export let showInvertedLabel: boolean = labelAlignX == 'center' && labelAlignY == 'middle';
-	export let style: string;
 
-	let canvasPercWidth = 0;
-	let canvasPercHeight = 0;
-	let canvasPercX = 0;
-	let canvasPercY = 0;
+	let canvasPercWidth = $state(0);
+	let canvasPercHeight = $state(0);
+	let canvasPercX = $state(0);
+	let canvasPercY = $state(0);
 
-	let gradientStartPercX: number = 0;
-	let gradientEndPercX: number = 0;
-	let gradientStartPercY: number = 0;
-	let gradientEndPercY: number = 0;
+	let gradientStartPercX: number = $state(0);
+	let gradientEndPercX: number = $state(0);
+	let gradientStartPercY: number = $state(0);
+	let gradientEndPercY: number = $state(0);
 
-	let maskWidth = 0;
-	let maskHeight = 0;
-	let maskX = 0;
-	let maskY = 0;
+	let maskWidth = $state(0);
+	let maskHeight = $state(0);
+	let maskX = $state(0);
+	let maskY = $state(0);
 
 	const ts = new Date().getTime();
 
@@ -45,25 +31,63 @@
 	if(fillDirection == null)
 		fillDirection = 'l2r';
 
-	export let actWidth: number = 0;
-	let vbHeight: number = 0;
-	let scaleX: number = 1;
-	let scaleY: number = 1;
+	interface Props {
+		height?: number;
+		textSize?: number;
+		showProgressValue?: boolean;
+		addBackground?: boolean;
+		bgColor?: string;
+		labelColor?: string;
+		invLabelColor?: string;
+		store: SeriesStore;
+		cls?: string;
+		path?: string;
+		pathFn?: any;
+		fillDirection?: string;
+		labelAlignX?: string;
+		labelAlignY?: string;
+		showInvertedLabel?: boolean;
+		style: string;
+		actWidth?: number;
+	}
 
-	$: {
+	let {
+		height = null,
+		textSize = null,
+		showProgressValue = true,
+		addBackground = true,
+		bgColor = '#f1f1f1',
+		labelColor = null,
+		invLabelColor = null,
+		store,
+		cls = '',
+		path = $bindable(null),
+		pathFn = () => '',
+		fillDirection = $bindable('l2r'),
+		labelAlignX = 'center',
+		labelAlignY = 'middle',
+		showInvertedLabel = labelAlignX == 'center' && labelAlignY == 'middle',
+		style,
+		actWidth = 0
+	}: Props = $props();
+	let vbHeight: number = $state(0);
+	let scaleX: number = $state(1);
+	let scaleY: number = $state(1);
+
+	run(() => {
 		if(actWidth > 0) {
 			vbHeight = height * 100 / actWidth;
 			scaleX = 100 / actWidth;
 			scaleY = vbHeight / height;
 		}
-	}
+	});
 
-	$: {
+	run(() => {
 		if(pathFn)
 			path = pathFn(100, vbHeight);
-	}
+	});
 
-	$: {
+	run(() => {
 		if( (fillDirection == 'l2r') || (fillDirection == 'r2l') ) {
 
 			canvasPercWidth = $store.overallPerc;
@@ -106,7 +130,7 @@
 
 		}
 
-	}
+	});
 </script>
 
 <style>

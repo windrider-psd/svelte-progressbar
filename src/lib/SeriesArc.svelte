@@ -4,13 +4,25 @@
 
 	import {getArcPath} from './utils';
 
-	export let thickness: number;
-	export let startAngle: number;
-	export let endAngle: number;
-	export let bg: boolean = false;
-	export let serieIdx: number;
-	export let store: SeriesStore;
-	export let stackSeries: boolean;
+	interface Props {
+		thickness: number;
+		startAngle: number;
+		endAngle: number;
+		bg?: boolean;
+		serieIdx: number;
+		store: SeriesStore;
+		stackSeries: boolean;
+	}
+
+	let {
+		thickness,
+		startAngle,
+		endAngle,
+		bg = false,
+		serieIdx,
+		store,
+		stackSeries
+	}: Props = $props();
 
 	function getPercArcPath(x: number, y: number, radius: number, startPerc: number, endPerc: number): string {
 		if(startPerc < 0)
